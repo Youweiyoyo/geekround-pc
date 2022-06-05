@@ -6,13 +6,14 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons'
 import './layout.scss'
-import { Outlet } from 'react-router-dom'
+import { Outlet, Link, useLocation } from 'react-router-dom'
 const { Header, Sider } = Layout
 export default function LayOut() {
+  const { pathname } = useLocation()
   const items = [
-    { label: '数据概览', key: 'data' },
-    { label: '内容管理', key: 'content' },
-    { label: '发布文章', key: 'article' },
+    { label: <Link to="/home">数据管理</Link>, key: '/home' },
+    { label: <Link to="/publish">发布管理</Link>, key: '/publish' },
+    { label: <Link to="/article">文章管理</Link>, key: '/article' },
   ]
   return (
     <Layout>
@@ -33,7 +34,7 @@ export default function LayOut() {
             items={items}
             mode="inline"
             theme="dark"
-            defaultSelectedKeys={['1']}
+            defaultSelectedKeys={[pathname]}
             style={{ height: '100%', borderRight: 0 }}
           >
             {/* antD 4.20可用，之后的版本报警告 */}
