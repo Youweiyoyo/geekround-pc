@@ -1,5 +1,5 @@
 import { makeAutoObservable } from 'mobx'
-import { Http, getToken, setToken } from '@/utils'
+import { http, getToken, setToken } from '@/utils'
 class LoginStore {
   token = getToken() || ''
 
@@ -8,7 +8,7 @@ class LoginStore {
   }
   // 验证码：246810
   getToken = async ({ mobile, code }) => {
-    const res = await Http.post('http://geek.itheima.net/v1_0/authorizations', {
+    const res = await http.post('/authorizations', {
       mobile,
       code,
     })

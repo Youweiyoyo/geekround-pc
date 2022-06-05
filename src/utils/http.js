@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { getToken } from './token'
 const http = axios.create({
-  baseUrl: 'http://geek.itheima.net/v1_0',
+  baseUrl: 'http://geek.itheima.net/v1_0/',
   timeout: 5000,
 })
 

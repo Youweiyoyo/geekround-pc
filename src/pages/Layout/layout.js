@@ -6,21 +6,41 @@ import {
   LogoutOutlined,
 } from '@ant-design/icons'
 import './layout.scss'
+import { observer } from 'mobx-react-lite'
+import { useEffect } from 'react'
 import { Outlet, Link, useLocation } from 'react-router-dom'
+import useStore from '@/store'
 const { Header, Sider } = Layout
-export default function LayOut() {
+function LayOut() {
+  //  通过 useLocation HOOK 获取 路由路径名称
   const { pathname } = useLocation()
+  const { userStore } = useStore()
+  useEffect(() => {
+    userStore.getUserInfo()
+  }, [userStore])
   const items = [
-    { label: <Link to="/home">数据管理</Link>, key: '/home' },
-    { label: <Link to="/publish">发布管理</Link>, key: '/publish' },
-    { label: <Link to="/article">文章管理</Link>, key: '/article' },
+    {
+      label: <Link to="/home">数据管理</Link>,
+      key: '/home',
+      icon: <HomeOutlined />,
+    },
+    {
+      label: <Link to="/publish">发布管理</Link>,
+      key: '/publish',
+      icon: <DiffOutlined />,
+    },
+    {
+      label: <Link to="/article">文章管理</Link>,
+      key: '/article',
+      icon: <EditOutlined />,
+    },
   ]
   return (
     <Layout>
       <Header className="header">
         <div className="logo" />
         <div className="user-info">
-          <span className="user-name">user.name</span>
+          <span className="user-name">{userStore.userInfo.name}</span>
           <span className="user-logout">
             <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消">
               <LogoutOutlined /> 退出
@@ -56,3 +76,4 @@ export default function LayOut() {
     </Layout>
   )
 }
+export default observer(LayOut)
