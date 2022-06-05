@@ -1,9 +1,17 @@
-import { Card, Form, Input, Button, Checkbox } from 'antd'
+import { Card, Form, Input, Button, Checkbox, message } from 'antd'
 import './index.scss'
 import logo from '@/assets/img/logo.png'
+import useStore from '@/store/index'
+//  导入路由跳转
+import { useNavigate } from 'react-router-dom'
 export default function Login() {
-  const onFinish = (values) => {
-    console.log(values)
+  const { loginStore } = useStore()
+  const navigate = useNavigate()
+  const onFinish = async ({ mobile, code }) => {
+    await loginStore.getToken({ mobile, code })
+    message.success('登录成功')
+    // 编程式导航
+    navigate('/', { replace: true })
   }
   return (
     <div className="login">
@@ -17,7 +25,7 @@ export default function Login() {
         >
           <Form.Item
             label="手机号"
-            name="username"
+            name="mobile"
             rules={[
               {
                 pattern: /^1[3-9]\d{9}$/,
@@ -35,7 +43,7 @@ export default function Login() {
 
           <Form.Item
             label="验证码"
-            name="password"
+            name="code"
             rules={[
               {
                 len: 6,
