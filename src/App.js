@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Layout from '@/pages/Layout/layout'
 import Login from '@/pages/Login/login'
+import AuthRouter from '@/components/AuthComponent'
 import { Button } from 'antd'
 function App() {
   return (
@@ -11,9 +12,14 @@ function App() {
           <Route path="/login" element={<Login />}>
             login
           </Route>
-          <Route path="/" element={<Layout />}>
-            loyOut
-          </Route>
+          <Route
+            path="/"
+            element={
+              <AuthRouter>
+                <Layout />
+              </AuthRouter>
+            }
+          ></Route>
         </Routes>
       </div>
     </BrowserRouter>
