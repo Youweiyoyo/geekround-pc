@@ -8,16 +8,22 @@ import {
 import './layout.scss'
 import { observer } from 'mobx-react-lite'
 import { useEffect } from 'react'
-import { Outlet, Link, useLocation } from 'react-router-dom'
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom'
 import useStore from '@/store'
 const { Header, Sider } = Layout
 function LayOut() {
   //  通过 useLocation HOOK 获取 路由路径名称
   const { pathname } = useLocation()
-  const { userStore } = useStore()
+  const { userStore, loginStore } = useStore()
+  const navigate = useNavigate()
   useEffect(() => {
     userStore.getUserInfo()
   }, [userStore])
+  const onConfirm = () => {
+    //  清除 token 路由跳转到登录页
+    loginStore.loginOut()
+    navigate('/login')
+  }
   const items = [
     {
       label: <Link to="/home">数据管理</Link>,
@@ -42,7 +48,12 @@ function LayOut() {
         <div className="user-info">
           <span className="user-name">{userStore.userInfo.name}</span>
           <span className="user-logout">
-            <Popconfirm title="是否确认退出？" okText="退出" cancelText="取消">
+            <Popconfirm
+              title="是否确认退出？"
+              okText="退出"
+              cancelText="取消"
+              onConfirm={onConfirm}
+            >
               <LogoutOutlined /> 退出
             </Popconfirm>
           </span>
