@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { getToken } from './token'
+import history from './history'
 const http = axios.create({
   baseURL: 'http://geek.itheima.net/v1_0/',
   timeout: 5000,
@@ -25,6 +26,9 @@ http.interceptors.response.use(
     return response.data
   },
   (err) => {
+    if (err.response.status === 401) {
+      history.push('/login')
+    }
     return Promise.reject(err)
   }
 )
