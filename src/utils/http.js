@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { getToken } from './token'
+import { getToken, removeToken } from './token'
 import history from './history'
 const http = axios.create({
   baseURL: 'http://geek.itheima.net/v1_0/',
@@ -27,7 +27,9 @@ http.interceptors.response.use(
   },
   (err) => {
     if (err.response.status === 401) {
+      // 使用 React 包实现路由跳转
       history.push('/login')
+      removeToken()
     }
     return Promise.reject(err)
   }
