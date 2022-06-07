@@ -25,24 +25,47 @@ const { RangePicker } = DatePicker
 const Article = () => {
   // 频道列表管理
   const [channelList, setChannelList] = useState([])
-  const loadChannelList = async () => {
-    const { data: res } = await Http.get('/channels')
-    console.log(res, 'res')
-    setChannelList(res.channels)
-  }
+
   useEffect(() => {
+    const loadChannelList = async () => {
+      const { data: res } = await Http.get('/channels')
+      setChannelList(res.channels)
+    }
     loadChannelList()
   }, [])
+
+  // 表格数据
+  const [articleDatalist, setList] = useState({
+    list: [],
+    count: 0,
+  })
+  const [params, setParams] = useState({
+    page: 1,
+    per_page: 10,
+  })
+
   const onFinish = (values) => {
     console.log('[ values ] >', values)
   }
+  useEffect(() => {
+    const loadList = async () => {
+      const { data: res } = await Http.get('/mp/articles', { params })
+      setList({
+        list: res.results,
+        count: res.total_count,
+      })
+    }
+    loadList()
+  }, [params])
   const columns = [
     {
       title: '封面',
       dataIndex: 'cover',
       width: 120,
       render: (cover) => {
-        return <img src={cover || img404} width={80} height={60} alt="" />
+        return (
+          <img src={cover.images[0] || img404} width={80} height={60} alt="" />
+        )
       },
     },
     {
@@ -86,20 +109,6 @@ const Article = () => {
           </Space>
         )
       },
-    },
-  ]
-  const data = [
-    {
-      id: '8218',
-      comment_count: 0,
-      cover: {
-        images: ['http://geek.itheima.net/resources/images/15.jpg'],
-      },
-      like_count: 0,
-      pubdate: '2019-03-11 09:00:00',
-      read_count: 2,
-      status: 2,
-      title: 'wkwebview离线化加载h5资源解决方案',
     },
   ]
   return (
@@ -152,8 +161,12 @@ const Article = () => {
           </Form.Item>
         </Form>
       </Card>
-      <Card title={`根据筛选条件共查询到 count 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={data}></Table>
+      <Card title={`根据筛选条件共查询到${articleDatalist.count}条结果：`}>
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={articleDatalist.list}
+        ></Table>
       </Card>
     </div>
   )
