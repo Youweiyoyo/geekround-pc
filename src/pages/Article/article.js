@@ -69,6 +69,10 @@ const Article = () => {
     }
     loadList()
   }, [params])
+
+  const pageSizeChange = (page) => {
+    setParams({ ...params, page })
+  }
   const columns = [
     {
       title: '封面',
@@ -177,6 +181,11 @@ const Article = () => {
         <Table
           rowKey="id"
           columns={columns}
+          pagination={{
+            pageSize: params.per_page,
+            total: articleDatalist.count,
+            onChange: pageSizeChange,
+          }}
           dataSource={articleDatalist.list}
         ></Table>
       </Card>
