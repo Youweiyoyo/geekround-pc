@@ -45,7 +45,19 @@ const Article = () => {
   })
 
   const onFinish = (values) => {
-    console.log('[ values ] >', values)
+    const { channel_id, date, status } = values
+    const data = {}
+    if (status !== -1) {
+      data.status = status
+    }
+    if (channel_id) {
+      data.channel_id = channel_id
+    }
+    if (date) {
+      data.begin_pubdate = date[0].format('YYYY-MM-DD')
+      data.end_pubdate = date[1].format('YYYY-MM-DD')
+    }
+    setParams({ ...params, ...data })
   }
   useEffect(() => {
     const loadList = async () => {
