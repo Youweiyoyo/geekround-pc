@@ -18,12 +18,14 @@ import locale from 'antd/es/date-picker/locale/zh_CN'
 import './index.scss'
 import Http from '@/utils/http'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import img404 from '@/assets/img/error.png'
 
 const { Option } = Select
 const { RangePicker } = DatePicker
 
 const Article = () => {
+  const navigate = useNavigate()
   // 频道列表管理
   const [channelList, setChannelList] = useState([])
 
@@ -78,6 +80,9 @@ const Article = () => {
     await Http.delete(`/mp/articles/${data.id}`)
     setParams({ ...params, page: 1 })
   }
+  const goToPublish = (data) => {
+    navigate(`/publish/${data.id}`)
+  }
   const columns = [
     {
       title: '封面',
@@ -120,7 +125,12 @@ const Article = () => {
       render: (data) => {
         return (
           <Space size="middle">
-            <Button type="primary" shape="circle" icon={<EditOutlined />} />
+            <Button
+              onClick={goToPublish(data)}
+              type="primary"
+              shape="circle"
+              icon={<EditOutlined />}
+            />
             <Popconfirm
               title="确认是否删除文章？"
               onConfirm={() => delArticle(data)}
