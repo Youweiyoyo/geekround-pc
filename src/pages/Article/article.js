@@ -10,6 +10,7 @@ import {
   Table,
   Space,
   Tag,
+  Popconfirm,
 } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import 'moment/locale/zh-cn'
@@ -73,6 +74,10 @@ const Article = () => {
   const pageSizeChange = (page) => {
     setParams({ ...params, page })
   }
+  const delArticle = async (data) => {
+    await Http.delete(`/mp/articles/${data.id}`)
+    setParams({ ...params, page: 1 })
+  }
   const columns = [
     {
       title: '封面',
@@ -116,12 +121,20 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
+            <Popconfirm
+              title="确认是否删除文章？"
+              onConfirm={() => delArticle(data)}
+              onCancel={() => {}}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
           </Space>
         )
       },
