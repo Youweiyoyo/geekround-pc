@@ -84,6 +84,8 @@ const Publish = () => {
                 listType="picture-card"
                 className="avatar-uploader"
                 showUploadList
+                multiple={imgCount > 1}
+                maxCount={imgCount}
                 action="http://geek.itheima.net/v1_0/upload"
                 fileList={fileList}
                 onChange={onUploadChange}
