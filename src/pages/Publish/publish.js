@@ -9,7 +9,7 @@ import {
   Space,
   Select,
 } from 'antd'
-import { observe } from 'mobx'
+import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
@@ -22,6 +22,16 @@ const { Option } = Select
 const Publish = () => {
   const { channelStore } = useStore()
   const [value, setValue] = useState('')
+  const [fileList, setFileList] = useState([])
+  const [imgCount, setImgCount] = useState(1)
+  //  上传组件
+  const onUploadChange = ({ fileList }) => {
+    // 会执行3次，分阶段上传
+    setFileList(fileList)
+  }
+  const radioChange = (data) => {
+    setImgCount(data.target.value)
+  }
   return (
     <div className="publish">
       <Card
@@ -62,22 +72,27 @@ const Publish = () => {
 
           <Form.Item label="封面">
             <Form.Item name="type">
-              <Radio.Group>
+              <Radio.Group onChange={radioChange}>
                 <Radio value={1}>单图</Radio>
                 <Radio value={3}>三图</Radio>
                 <Radio value={0}>无图</Radio>
               </Radio.Group>
             </Form.Item>
-            <Upload
-              name="image"
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList
-            >
-              <div style={{ marginTop: 8 }}>
-                <PlusOutlined />
-              </div>
-            </Upload>
+            {imgCount > 0 && (
+              <Upload
+                name="image"
+                listType="picture-card"
+                className="avatar-uploader"
+                showUploadList
+                action="http://geek.itheima.net/v1_0/upload"
+                fileList={fileList}
+                onChange={onUploadChange}
+              >
+                <div style={{ marginTop: 8 }}>
+                  <PlusOutlined />
+                </div>
+              </Upload>
+            )}
           </Form.Item>
           <Form.Item
             label="内容"
@@ -104,4 +119,4 @@ const Publish = () => {
   )
 }
 
-export default observe(Publish)
+export default observer(Publish)
