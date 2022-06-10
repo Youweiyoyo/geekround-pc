@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { observer } from 'mobx-react-lite'
 import {
   Card,
   Breadcrumb,
@@ -19,6 +20,7 @@ import './index.scss'
 import Http from '@/utils/http'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useStore from '@/store'
 import img404 from '@/assets/img/error.png'
 
 const { Option } = Select
@@ -26,16 +28,8 @@ const { RangePicker } = DatePicker
 
 const Article = () => {
   const navigate = useNavigate()
+  const { channelStore } = useStore()
   // 频道列表管理
-  const [channelList, setChannelList] = useState([])
-
-  useEffect(() => {
-    const loadChannelList = async () => {
-      const { data: res } = await Http.get('/channels')
-      setChannelList(res.channels)
-    }
-    loadChannelList()
-  }, [])
 
   // 表格数据
   const [articleDatalist, setList] = useState({
@@ -180,7 +174,7 @@ const Article = () => {
               initialValues="lucy"
               style={{ width: 120 }}
             >
-              {channelList.map((item) => (
+              {channelStore.channelList.map((item) => (
                 <Option value={item.id} key={item.id}>
                   {item.name}
                 </Option>
@@ -216,4 +210,4 @@ const Article = () => {
   )
 }
 
-export default Article
+export default observer(Article)

@@ -14,11 +14,12 @@ const { Header, Sider } = Layout
 function LayOut() {
   //  通过 useLocation HOOK 获取 路由路径名称
   const { pathname } = useLocation()
-  const { userStore, loginStore } = useStore()
+  const { userStore, loginStore, channelStore } = useStore()
   const navigate = useNavigate()
   useEffect(() => {
     userStore.getUserInfo()
-  }, [userStore])
+    channelStore.loadChannelList()
+  }, [userStore, channelStore])
   const onConfirm = () => {
     //  清除 token 路由跳转到登录页
     loginStore.loginOut()
