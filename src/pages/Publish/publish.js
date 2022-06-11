@@ -12,7 +12,7 @@ import {
 import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
@@ -25,13 +25,27 @@ const Publish = () => {
   const [value, setValue] = useState('')
   const [fileList, setFileList] = useState([])
   const [imgCount, setImgCount] = useState(1)
+  //  1.使用 useRef 暂存图片
+  const fileListRef = useRef([])
   //  上传组件
   const onUploadChange = ({ fileList }) => {
     // 会执行3次，分阶段上传
     setFileList(fileList)
+    // 2.将上传的图片暂存起来
+    fileListRef.current = fileList
   }
   const radioChange = (data) => {
-    setImgCount(data.target.value)
+    const valueIndex = data.target.value
+    setImgCount(valueIndex)
+
+    if (fileListRef.current.length === 0) return
+    // 3.根据模式进行判断
+    if (valueIndex === 1) {
+      const img = fileListRef.current ? fileListRef.current[0] : []
+      setFileList([img])
+    } else if (valueIndex === 3) {
+      setFileList(fileListRef.current)
+    }
   }
   const onFinish = async (FormData) => {
     const { channel_id, content, title, type } = FormData
