@@ -12,7 +12,7 @@ import {
 import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link, useSearchParams } from 'react-router-dom'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
@@ -25,6 +25,7 @@ const Publish = () => {
   const [value, setValue] = useState('')
   const [fileList, setFileList] = useState([])
   const [imgCount, setImgCount] = useState(1)
+  const FormRef = useRef(null)
   //  1.使用 useRef 暂存图片
   const fileListRef = useRef([])
   //  上传组件
@@ -61,8 +62,27 @@ const Publish = () => {
     }
     await Http.post('/mp/articles?draft=false', params)
   }
+  // 编辑功能：文案适配
   const [params] = useSearchParams()
   const id = params.get('id')
+  //  数据回显
+  useEffect(() => {
+    const getDetail = async () => {
+      const res = await Http.get(`/mp/articles/${id}`)
+      //  表单回填方法
+      FormRef.current.setFieldsValue({ ...res.data, type: res.data.cover.type })
+      setFileList(
+        res.data.cover.images.map((item) => {
+          return { url: item }
+        })
+      )
+      // 图片暂存列表回填
+      fileListRef.current = res.data.cover.images.map((item) => {
+        return { url: item }
+      })
+    }
+    if (id) getDetail()
+  }, [id])
   return (
     <div className="publish">
       <Card
@@ -76,6 +96,7 @@ const Publish = () => {
         }
       >
         <Form
+          ref={FormRef}
           onFinish={onFinish}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
@@ -143,7 +164,7 @@ const Publish = () => {
           <Form.Item wrapperCol={{ offset: 4 }}>
             <Space>
               <Button size="large" type="primary" htmlType="submit">
-                发布文章
+                {id ? '更新文章' : '发布文章'}
               </Button>
             </Space>
           </Form.Item>
