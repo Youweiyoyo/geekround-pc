@@ -13,7 +13,8 @@ import useStore from '@/store'
 const { Header, Sider } = Layout
 function LayOut() {
   //  通过 useLocation HOOK 获取 路由路径名称
-  const { pathname } = useLocation()
+  const location = useLocation()
+  const pathname = location.pathname
   const { userStore, loginStore, channelStore } = useStore()
   const navigate = useNavigate()
   useEffect(() => {
@@ -66,7 +67,8 @@ function LayOut() {
             items={items}
             mode="inline"
             theme="dark"
-            defaultSelectedKeys={[pathname]}
+            selectedKeys={pathname}
+            defaultSelectedKeys={pathname}
             style={{ height: '100%', borderRight: 0 }}
           >
             {/* antD 4.20可用，之后的版本报警告 */}

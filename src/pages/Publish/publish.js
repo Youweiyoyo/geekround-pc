@@ -11,7 +11,7 @@ import {
 } from 'antd'
 import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useState, useRef } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
@@ -61,6 +61,8 @@ const Publish = () => {
     }
     await Http.post('/mp/articles?draft=false', params)
   }
+  const [params] = useSearchParams()
+  const id = params.get('id')
   return (
     <div className="publish">
       <Card
@@ -69,7 +71,7 @@ const Publish = () => {
             <Breadcrumb.Item>
               <Link to="/home">首页</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item>发布文章</Breadcrumb.Item>
+            <Breadcrumb.Item>{id ? '编辑文章' : '发布文章'}</Breadcrumb.Item>
           </Breadcrumb>
         }
       >
