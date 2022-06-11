@@ -71,13 +71,13 @@ function LayOut() {
           >
             {/* antD 4.20可用，之后的版本报警告 */}
             {/* <Menu.Item icon={<HomeOutlined />} key="1">
-              数据概览
+              <Link to="/home">数据管理</Link>
             </Menu.Item>
             <Menu.Item icon={<DiffOutlined />} key="2">
-              内容管理
+              <Link to="/publish">发布管理</Link>
             </Menu.Item>
             <Menu.Item icon={<EditOutlined />} key="3">
-              发布文章
+              <Link to="/article">文章管理</Link>
             </Menu.Item> */}
           </Menu>
         </Sider>

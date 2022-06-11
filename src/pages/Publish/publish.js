@@ -17,6 +17,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import './index.scss'
 import useStore from '@/store'
+import Http from '@/utils/http'
 const { Option } = Select
 
 const Publish = () => {
@@ -32,6 +33,20 @@ const Publish = () => {
   const radioChange = (data) => {
     setImgCount(data.target.value)
   }
+  const onFinish = async (FormData) => {
+    const { channel_id, content, title, type } = FormData
+    const params = {
+      channel_id,
+      content,
+      title,
+      type,
+      cover: {
+        type,
+        images: fileList.map((item) => item.response.data.url),
+      },
+    }
+    await Http.post('/mp/articles?draft=false', params)
+  }
   return (
     <div className="publish">
       <Card
@@ -45,6 +60,7 @@ const Publish = () => {
         }
       >
         <Form
+          onFinish={onFinish}
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 1, content: 'This is not 404' }}

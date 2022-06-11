@@ -29,8 +29,6 @@ const { RangePicker } = DatePicker
 const Article = () => {
   const navigate = useNavigate()
   const { channelStore } = useStore()
-  // 频道列表管理
-
   // 表格数据
   const [articleDatalist, setList] = useState({
     list: [],
@@ -75,7 +73,7 @@ const Article = () => {
     setParams({ ...params, page: 1 })
   }
   const goToPublish = (data) => {
-    navigate(`/publish/${data.id}`)
+    navigate(`/publish?id=${data.id}`)
   }
   const columns = [
     {
@@ -120,7 +118,7 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button
-              onClick={goToPublish(data)}
+              onClick={() => goToPublish(data)}
               type="primary"
               shape="circle"
               icon={<EditOutlined />}
@@ -196,6 +194,7 @@ const Article = () => {
       </Card>
       <Card title={`根据筛选条件共查询到${articleDatalist.count}条结果：`}>
         <Table
+          dataSource={articleDatalist.list}
           rowKey="id"
           columns={columns}
           pagination={{
@@ -203,7 +202,6 @@ const Article = () => {
             total: articleDatalist.count,
             onChange: pageSizeChange,
           }}
-          dataSource={articleDatalist.list}
         ></Table>
       </Card>
     </div>
