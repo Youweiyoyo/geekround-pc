@@ -8,10 +8,11 @@ import {
   Upload,
   Space,
   Select,
+  message,
 } from 'antd'
 import { observer } from 'mobx-react-lite'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useNavigate } from 'react-router-dom'
 import { useState, useRef, useEffect } from 'react'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
@@ -21,6 +22,7 @@ import Http from '@/utils/http'
 const { Option } = Select
 
 const Publish = () => {
+  const navigate = useNavigate()
   const { channelStore } = useStore()
   const [value, setValue] = useState('')
   const [fileList, setFileList] = useState([])
@@ -30,8 +32,17 @@ const Publish = () => {
   const fileListRef = useRef([])
   //  上传组件
   const onUploadChange = ({ fileList }) => {
+    console.log('[ fileList ] >', fileList)
+    const formatList = fileList.map((file) => {
+      if (file.response) {
+        return {
+          url: file.response.data.url,
+        }
+      }
+      return file
+    })
     // 会执行3次，分阶段上传
-    setFileList(fileList)
+    setFileList(formatList)
     // 2.将上传的图片暂存起来
     fileListRef.current = fileList
   }
@@ -57,10 +68,16 @@ const Publish = () => {
       type,
       cover: {
         type,
-        images: fileList.map((item) => item.response.data.url),
+        images: fileList.map((item) => item.url),
       },
     }
-    await Http.post('/mp/articles?draft=false', params)
+    if (id) {
+      await Http.put(`/mp/articles/${id}?draft=false`, params)
+    } else {
+      await Http.post('/mp/articles?draft=false', params)
+    }
+    navigate('/article')
+    message.success(id ? '更新文章成功！' : '发布文章成功！')
   }
   // 编辑功能：文案适配
   const [params] = useSearchParams()
